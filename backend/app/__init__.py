@@ -20,7 +20,7 @@ def create_app():
     @app.route('/myapi/', methods=['GET'])
     def ask():
         print("Hiii")
-        response = jsonify({'msg': "Success!"})
+        response = jsonify({'msg': "Nima chodu!"})
         response.status_code = 200
         return response
 
