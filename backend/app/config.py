@@ -1,0 +1,1 @@
+CONNECTION_STRING = "mongodb://john:1234@cluster0-shard-00-00.xo0bk.mongodb.net:27017,cluster0-shard-00-01.xo0bk.mongodb.net:27017,cluster0-shard-00-02.xo0bk.mongodb.net:27017/myFirstDatabase?ssl=true&replicaSet=atlas-8eek1z-shard-0&authSource=admin&retryWrites=true&w=majority"

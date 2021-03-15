@@ -1,0 +1,51 @@
+#symbolBar img{
+    width: 5%;
+    margin: 1%;
+    margin-left: 46%;
+}
+#signUpIntro h2{
+    font-size: 153%;
+    margin-top: 3%;
+    color: #4aace9;
+
+}
+.signUpH2{
+    font-size: 153%;
+    margin-top: 3%;
+    color: #4aace9;
+    margin-left: 27%;
+}
+.connect{
+    margin-left: 23%;
+    font-size: 110%;
+}
+.apple {
+    margin-left: 21%;
+    margin-top: 2%;
+}
+
+.facebook{
+    margin-top: 1%;
+    margin-left: 21%;
+}
+.kep-login-facebook {
+    width: 28%;
+}
+#google {
+    margin-left: 21%;
+    margin-top: 1%;
+}
+#googleBtn button{
+    width: 28%;
+}
+.signUpForm{
+    margin-left: 21%;
+}
+.imageRight{
+    margin-left: 30%;
+}
+.ant-btn{
+background-color: #4aace9 ;
+color: white;
+width: 29%;
+}

@@ -1,0 +1,32 @@
+.topBar{
+    background-color: #4aace9;
+}
+#symbolBar img{
+    width: 5%;
+    margin: 1%;
+    margin-left: 46%;
+}
+.signInWelcome{
+    font-size: 160%;
+    margin-top: 11%;
+    color: #4aace9;
+    font-weight: bolder;
+}
+.signUpH4{
+    font-weight: bolder;
+    margin-left: 27%;
+}
+.signInButtons{
+    margin-top: 4%;
+    margin-left:21%
+}
+.loginForm{
+    margin-top: 1%;
+    margin-left: 21%;
+}
+#email {
+    width: 29%;
+}
+.btnPosition {
+    margin-left: 21%;
+}
