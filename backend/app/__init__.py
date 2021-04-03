@@ -12,13 +12,16 @@ import pandasql as ps
 from flask_pymongo import pymongo
 import boto3
 from werkzeug.utils import secure_filename
-import config.py as keys
+import pandas as pd  
+import os
+from bson import ObjectId
+
 
 
 
 pd.set_option('display.max_colwidth', -1)
 
-CONNECTION_STRING = "mongodb://john:1234@cluster0-shard-00-00.xo0bk.mongodb.net:27017,cluster0-shard-00-01.xo0bk.mongodb.net:27017,cluster0-shard-00-02.xo0bk.mongodb.net:27017/myFirstDatabase?ssl=true&replicaSet=atlas-8eek1z-shard-0&authSource=admin&retryWrites=true&w=majority"
+CONNECTION_STRING = "mongodb://john:1234@mlas-shard-00-00.xo0bk.mongodb.net:27017,mlas-shard-00-01.xo0bk.mongodb.net:27017,mlas-shard-00-02.xo0bk.mongodb.net:27017/myFirstDatabase?ssl=true&replicaSet=atlas-5l9g09-shard-0&authSource=admin&retryWrites=true&w=majority"
 
 
 client = pymongo.MongoClient(CONNECTION_STRING)
@@ -58,11 +61,17 @@ def create_app():
         data = json.loads(request.data)
         print(data)
         user = db.user.find_one({"email" : data["email"]})
+        
         response = {}
         if user != None:    
+            print("User ----->")
+            print(user['_id'])
             if(data['password'] == user['password']):
-                response = jsonify({'msg': "Success!"})
-                response.status_code = 200
+                if isinstance(user['_id'], ObjectId):
+                    user['_id'] = str(user['_id'])
+                response = jsonify({'msg': "Success!", 'user' : user})
+                # response.status_code = 200
+
             else:
                 response = jsonify({'msg': "Wrong Credentials!"})
                 response.status_code = 209
@@ -98,24 +107,35 @@ def create_app():
     
     @app.route('/uploadFile', methods = ['POST'])
     def uploadFile():
-        # data = json.loads(request.data)
         file = request.files['file']
+        data = request.form['user_id']
+        print(data)
+        response = {}
+        result = {}
         if file:
             filename = secure_filename(file.filename)
             file.save(filename)
-            # link = "https://s3.us-west-1.amazonaws.com/glassdoorcmpe273/" + filename
-            temp = s3.upload_file(
+            s3.upload_file(
                 Bucket = BUCKET_NAME,
                 Filename=filename,
-                Key = filename
+                Key = filename,
+                ExtraArgs={'ACL':'public-read'}
             )
-            # file.remove(filename)
+            os.remove(filename)
             link = "https://s3.us-east-1.amazonaws.com/mlaas-cmpe295b/" + filename
-            print(link)
-        response = jsonify({'msg': "Success!"})
-        response.status_code = 200
+            data = pd.read_csv(link)
+            cols = []
+            for col in data.columns.values:
+                cols.append(col)
+            values = []
+            for i in data.index:
+                values.append(data.loc[i].to_json())
+            response['cols'] = cols
+            response['values'] = values
+            response['fileLink'] = link
+            # print(type(cols))
         # print(response)
-        return response
+        return json.dumps(response)
 
 
 

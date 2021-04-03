@@ -57,7 +57,7 @@ handleSignIn = () => {
                       'User successfully signed in',
                   });
                   window.sessionStorage.setItem("isLoggedIn", true)
-                //   window.sessionStorage.setItem("UserId",response.data.user_id);
+                  window.sessionStorage.setItem("UserId",response.data.user._id);
             }
             else if(response.status === 209)
             {
@@ -79,7 +79,7 @@ handleSignIn = () => {
                     });
                 
             }
-
+            console.log(sessionStorage)
     })
    
 }
