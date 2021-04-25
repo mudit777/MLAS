@@ -80,6 +80,28 @@ export default class Home extends Component {
         })
     }
     render() {
+        var temp = null
+        if(this.state.columns.length > 0){
+            console.log(this.state.columns)
+            temp = this.state.columns.map(i => {
+                return(
+                    <div>
+                        <ul style={{listStyleType:'none'}}>
+                            <li>
+                                <Row>
+                                    <Col>
+                                        <Switch />
+                                    </Col>
+                                    <Col style = {{marginLeft : "10%"}}>
+                                        {i.title}
+                                    </Col>
+                                </Row>
+                            </li>
+                        </ul>
+                    </div>
+                )
+            })
+        }
         return (
             <div>
                 <div>
@@ -116,23 +138,11 @@ export default class Home extends Component {
                                 // <Button onClick = {this.handleCancel}>Cancel</Button>,
                                 // <Button loading={this.state.loading} onClick = {this.registerForEvent}>Register For Event</Button>
                             ]}
+                            style = {{
+                                
+                            }}
                         >
-                            <ul style = {{listStyleType: "none"}}>
-                                {this.state.columns.map(col => {
-                                    return(
-                                        <li>
-                                            <Row>
-                                                <Col>
-                                                    <h3>{col}</h3>
-                                                </Col>
-                                                <Col>
-                                                    {/* <Switch /> */}
-                                                </Col>
-                                            </Row>
-                                        </li>
-                                    )
-                                })}
-                            </ul>
+                            {temp}
                     </Modal>
                 </div>
             </div>
