@@ -15,6 +15,8 @@ from werkzeug.utils import secure_filename
 import pandas as pd  
 import os
 from bson import ObjectId
+# from urllib import url
+
 
 
 
@@ -115,14 +117,15 @@ def create_app():
         if file:
             filename = secure_filename(file.filename)
             file.save(filename)
-            s3.upload_file(
-                Bucket = BUCKET_NAME,
-                Filename=filename,
-                Key = filename,
-                ExtraArgs={'ACL':'public-read'}
-            )
+            # s3.upload_file(
+            #     Bucket = BUCKET_NAME,
+            #     Filename=filename,
+            #     Key = filename,
+            #     ExtraArgs={'ACL':'public-read'}
+            # )
             os.remove(filename)
             link = "https://s3.us-east-1.amazonaws.com/mlaas-cmpe295b/" + filename
+            print(link)
             data = pd.read_csv(link)
             cols = []
             for col in data.columns.values:
@@ -133,9 +136,31 @@ def create_app():
             response['cols'] = cols
             response['values'] = values
             response['fileLink'] = link
-            # print(type(cols))
-        # print(response)
+            
         return json.dumps(response)
+
+    
+    @app.route('/updateFile', methods = ["POST"])
+    def updateFile():
+        request_data = json.loads(request.data)
+        data_frame = pd.read_csv(request_data['file'])
+        fileName = request_data['file_name']
+        for col in request_data['columns']:
+            del data_frame[col]
+        file = os.path.dirname(os.path.realpath(__file__)) +"/Temp_files/new_" + fileName 
+        data_frame.to_csv(file)
+        fileName = "new_" + fileName
+        s3.upload_file(
+            Bucket = BUCKET_NAME,
+            Filename=file,
+            Key = fileName,
+            ExtraArgs={'ACL':'public-read'}
+        )
+        link = "https://s3.us-east-1.amazonaws.com/mlaas-cmpe295b/" + fileName
+        print(link)
+        response = jsonify({'msg': "Success!"})
+        response.status_code = 200        
+        return response
 
 
 
