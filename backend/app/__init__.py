@@ -22,11 +22,29 @@ import matplotlib.pyplot as plt
 import matplotlib
 matplotlib.use('Qt5Agg')
 from flask import send_file
+from sklearn.model_selection import train_test_split
+import autosklearn.regression
+import autosklearn.classification
+import sklearn
+
 
 encoders = {} 
 encoders['label_encoding'] = LabelEncoder()
 
 
+
+automl_regression = autosklearn.regression.AutoSklearnRegressor(
+    time_left_for_this_task=120,
+    per_run_time_limit=30,
+    tmp_folder = "~/Desktop/autosklearn/tmp",
+    output_folder = "~/Desktop/autosklearn/out",
+)
+
+automl_classification = autosklearn.classification.AutoSklearnClassifier(time_left_for_this_task=120, per_run_time_limit=30, tmp_folder = "~/Desktop/autosklearn/tmp", output_folder = "~/Desktop/autosklearn/out",)
+
+algorithms = {}
+algorithms['Classification'] = automl_classification
+algorithms['Regression'] = automl_regression
 
 
 
@@ -250,6 +268,31 @@ def create_app():
         request_data = json.loads(request.data)
         print(request_data)
         data_frame = pd.read_csv(request_data['file'])
+        x = data_frame.drop(request_data['targetColumn'], axis = 1)
+        y = data_frame[request_data['targetColumn']]
+        x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.3)
+        # print(x)
+        # print(y)
+        algorithms[request_data['algo_type']].fit(x_train, y_train)
+        predictions = algorithms[request_data['algo_type']].predict(x_test)
+        # print(sklearn.metrics.r2_score(y_test, predictions))
+        for metric in request_data['evaluation_met']:
+            if metric == "Accuracy":
+                print(f"Accuracy = {sklearn.metrics.accuracy_score(predictions, y_test)}")
+            elif metric == "Precision":
+                print(f"Precision = {sklearn.metrics.precision_score(predictions, y_test)}")
+            elif metric == "Recall":
+                print(f"Recall = {sklearn.metrics.recall_score(predictions, y_test)}")
+            elif metric == "F1-score":
+                print(f"F1 score = {sklearn.metrics.f1_score(predictions, y_test)}")
+            elif metric == "ROC-AUC":
+                print(f"ROC, Area under curve = {sklearn.metrics.roc_auc_score(predictions, y_test)}")
+            elif metric == "R2":
+                print(f"R2 Score = {sklearn.metrics.r2_score(predictions, y_test)}")
+            elif metric == "Mean Square Error":
+                print(f"Mean Squared Error = {sklearn.metrics.mean_sqaured_error(predictions, y_test)}")
+        # print(sklearn.metrics.accuracy_score(predictions, y_test))
+        # print("Done")
         response = jsonify({'msg': "Wrong Credentials!"})
         response.status_code = 200
         return response

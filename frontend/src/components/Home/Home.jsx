@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import axios from 'axios';
 import { BACKEND } from '../../Config';
-import { Table, Tag, Space, Spin, Button, Modal, Row, Col, Switch, Radio, Checkbox } from 'antd';
+import { Table, Tag, Space, Spin, Button, Modal, Row, Col, Switch, Radio, Checkbox, Select } from 'antd';
 import Navbar from '../Navbar/Navbar';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSmile, faSmileBeam } from '@fortawesome/free-regular-svg-icons';
@@ -30,7 +30,8 @@ export default class Home extends Component {
             pairPlotImage : "",
             autoMLVisible: false,
             algoType : 'Classification',
-            metrics: []
+            metrics: [],
+            targetColumn : ""
         }
     }
     uploadFile = (e) => {
@@ -235,6 +236,7 @@ export default class Home extends Component {
             file : this.state.fileLink,
             evaluation_met : this.state.metrics,
             algo_type : this.state.algoType,
+            targetColumn : this.state.targetColumn
         }
         axios.post(`${BACKEND}/runAutoML`, myJson).then(response => {
             
@@ -250,6 +252,11 @@ export default class Home extends Component {
         arr.push(e.target.value)
         this.setState({
             metrics : arr
+        })
+    }
+    handleSelectChange = (value) => {
+        this.setState({
+            targetColumn : value
         })
     }
     render() {
@@ -390,8 +397,22 @@ export default class Home extends Component {
                                 <Radio value = 'Classification'>Classification</Radio>
                                 <Radio value = 'Regression'>Regression</Radio>
                             </Radio.Group>
+                            <br />
                             <p>Select Evaluation Metrics</p>
                             {checkbox_select}
+                            <br />
+                            <div>
+                                <p>
+                                    Select target column
+                                </p>
+                                <Select onChange = {this.handleSelectChange} style = {{width : "200px"}}>
+                                {this.state.columns.map(i => {
+                                    return(
+                                        <Select.Option value = {i.title}>{i.title}</Select.Option>
+                                    )
+                                })}
+                                </Select>
+                            </div>
                     </Modal>
                 </div>
             </div>
