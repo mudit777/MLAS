@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import axios from 'axios';
 import { BACKEND } from '../../Config';
-import { Table, Tag, Space, Spin, Button, Modal, Row, Col, Switch } from 'antd';
+import { Table, Tag, Space, Spin, Button, Modal, Row, Col, Switch, Radio, Checkbox } from 'antd';
 import Navbar from '../Navbar/Navbar';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSmile, faSmileBeam } from '@fortawesome/free-regular-svg-icons';
@@ -27,7 +27,10 @@ export default class Home extends Component {
             encodeVisible : false,
             encodedColumns : {},
             PairPlotVisible : false,
-            pairPlotImage : ""
+            pairPlotImage : "",
+            autoMLVisible: false,
+            algoType : 'Classification',
+            metrics: []
         }
     }
     uploadFile = (e) => {
@@ -193,7 +196,8 @@ export default class Home extends Component {
     }
     handleEncodeCancel = () => {
         this.setState({
-            encodeVisible : false
+            encodeVisible : false,
+            autoMLVisible: false
         })
     }
     openPairPlot = () => {
@@ -211,7 +215,45 @@ export default class Home extends Component {
             PairPlotVisible : true
         })
     }
+    openAutoML = () => {
+        var myJson = {
+            file : this.state.fileLink
+        }
+        // axios.post(`${BACKEND}/pairPlot`, myJson).then(response => {
+        //     console.log(response.data)
+        //     this.setState({
+        //         autoMLVisible : true,
+        //         // pairPlotImage : response.data
+        //     })
+        // })
+        this.setState({
+            autoMLVisible : true
+        })
+    }
+    runAutoML = () => {
+        var myJson = {
+            file : this.state.fileLink,
+            evaluation_met : this.state.metrics,
+            algo_type : this.state.algoType,
+        }
+        axios.post(`${BACKEND}/runAutoML`, myJson).then(response => {
+            
+        })
+    }
+    selectAlgorithm = (e) => {
+        this.setState({
+            algoType : e.target.value
+        })
+    }
+    addAlgorithm = (e) => {
+        var arr = this.state.metrics
+        arr.push(e.target.value)
+        this.setState({
+            metrics : arr
+        })
+    }
     render() {
+        console.log(this.state.metrics)
         var temp = null
         if(this.state.columns.length > 0){
             temp =
@@ -239,6 +281,22 @@ export default class Home extends Component {
                         })
                     }
             </ul>  
+        }
+        var checkbox_select = null;
+        if(this.state.algoType === 'Classification'){
+            checkbox_select = <div>
+                <Checkbox onChange = {this.addAlgorithm} value='Accuracy'>Accuracy</Checkbox>
+                <Checkbox onChange = {this.addAlgorithm} value='Precision'>Precision</Checkbox>
+                <Checkbox onChange = {this.addAlgorithm} value='Recall'>Recall</Checkbox>
+                <Checkbox onChange = {this.addAlgorithm} value='F1_score'>F1-score</Checkbox>
+                <Checkbox onChange = {this.addAlgorithm} value='ROC_AUC'>ROC-AUC</Checkbox>
+            </div>
+        }
+        else{
+            checkbox_select = <div>
+                <Checkbox onChange = {this.addAlgorithm} value='R2'>R2</Checkbox>
+                <Checkbox onChange = {this.addAlgorithm} value='Mean_Square_Erroe'>Mean Square Error</Checkbox>
+            </div>
         }
         return (
             <div>
@@ -268,6 +326,9 @@ export default class Home extends Component {
                         </Col>
                         <Col>
                             <Button onClick = {this.openPairPlot}  style = {{display : this.state.tableDisplay, marginTop : "2%", width : "100%", float : "right", marginRight:"1%"}}>Pair Plot</Button>
+                        </Col>
+                        <Col>
+                            <Button onClick = {this.openAutoML}  style = {{display : this.state.tableDisplay, marginTop : "2%", width : "100%", float : "right", marginRight:"1%"}}>Run AutoML</Button>
                         </Col>
                     </Row>
                     <div>
@@ -315,6 +376,22 @@ export default class Home extends Component {
                            width = "600px"
                         >
                             <img src = "https://s3.us-east-1.amazonaws.com/mlaas-cmpe295b/2.png" alt = "pair plot"/>
+                    </Modal>
+                    <Modal title = "Select Algorithm Type"
+                            visible={this.state.autoMLVisible}
+                            onOk={this.handleOk}
+                            onCancel={this.handleEncodeCancel}
+                            footer = {[
+                                <Button onClick = {this.runAutoML}>Run AutoML</Button>
+                            ]}
+                           width = "600px"
+                        >
+                            <Radio.Group value = {this.state.algoType} onChange = {this.selectAlgorithm}>
+                                <Radio value = 'Classification'>Classification</Radio>
+                                <Radio value = 'Regression'>Regression</Radio>
+                            </Radio.Group>
+                            <p>Select Evaluation Metrics</p>
+                            {checkbox_select}
                     </Modal>
                 </div>
             </div>

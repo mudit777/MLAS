@@ -245,8 +245,13 @@ def create_app():
         print(link)
         return send_file( "../2.png", mimetype='image/png')
         
-    @app.route('/run_automl', methods = ['POST'])
+    @app.route('/runAutoML', methods = ['POST'])
     def run_automl():
-        pass
-
+        request_data = json.loads(request.data)
+        print(request_data)
+        data_frame = pd.read_csv(request_data['file'])
+        response = jsonify({'msg': "Wrong Credentials!"})
+        response.status_code = 200
+        return response
+    
     return app
