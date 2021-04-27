@@ -58,8 +58,8 @@ db = client.get_database("MLAS")
 user_collection = pymongo.collection.Collection(db, 'user')
 
 s3 = boto3.client('s3',
-                    aws_access_key_id='AKIAINHXKX3DB35N2CUQ',
-                    aws_secret_access_key= '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',
+                    aws_access_key_id='******************',
+                    aws_secret_access_key= '***********************',
                     # aws_session_token='secret token here'
                      )
 BUCKET_NAME='mlaas-cmpe295b'
