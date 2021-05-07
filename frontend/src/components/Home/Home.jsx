@@ -7,8 +7,6 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSmile, faSmileBeam } from '@fortawesome/free-regular-svg-icons';
 
 
-
-
 export default class Home extends Component {
     constructor(props){
         super(props);
@@ -23,6 +21,7 @@ export default class Home extends Component {
         }
         console.log(sessionStorage)
     }
+    
     uploadFile = (e) => {
         this.setState({loading : true})
         var fd = new FormData();

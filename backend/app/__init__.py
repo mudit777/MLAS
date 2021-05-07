@@ -71,6 +71,7 @@ def create_app():
             if(data['password'] == user['password']):
                 if isinstance(user['_id'], ObjectId):
                     user['_id'] = str(user['_id'])
+                    user['user_name'] = str(user['first_name'] + " " + user['last_name'])
                 response = jsonify({'msg': "Success!", 'user' : user})
                 # response.status_code = 200
 
