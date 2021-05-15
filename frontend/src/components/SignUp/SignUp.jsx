@@ -8,26 +8,8 @@ import axios from 'axios';
 import './SignUp.css'
 import 'antd/dist/antd.css';
 import {BACKEND} from '../../Config'
- 
 const { Option } = Select;
-const days = []
-for (let i = 0; i < 31; i++) {
-    days.push(<Option key={i}>{i}</Option>);
-}
 
-const months = []
-months.push(<Option key ={'January'}>January</Option>)
-months.push(<Option key ={'February'}>February</Option>)
-months.push(<Option key ={'March'}>March</Option>)
-months.push(<Option key ={'April'}>April</Option>)
-months.push(<Option key ={'May'}>May</Option>)
-months.push(<Option key ={'June'}>June</Option>)
-months.push(<Option key ={'July'}>July</Option>)
-months.push(<Option key ={'August'}>August</Option>)
-months.push(<Option key ={'September'}>September</Option>)
-months.push(<Option key ={'October'}>October</Option>)
-months.push(<Option key ={'November'}>November</Option>)
-months.push(<Option key ={'December'}>December</Option>)
 
 const years= []
 for (let i = 1950; i < 2020; i++) {
@@ -139,29 +121,6 @@ class SignUp extends Component {
                     <div>
                         
                         <h2 className="signUpH2"><b>Sign Up for MLAS</b></h2>
-                        <p className='connect'><b>Connect with great Local businesses</b></p>
-                        <p style={{marginLeft:'22%', fontSize:"80%"}}>By continuing, you agree to Yelp’s Terms of Service and</p>
-                        <p style={{marginLeft:'25%', fontSize:"80%", marginTop:"-1%"}}>acknowledge Yelp’s Privacy Policy.</p>
-                    </div>
-                    <div>
-                        <div className="apple">
-                            <AppleLogin designProp = {
-                                {
-                                    width: 320,
-                                    height: 35,
-                                }
-                            } />
-                        </div>
-                        <div className='facebook'>
-                            <FacebookLogin size='small' className='facebookbtn'/>
-                        </div>
-                        <div id='google'>
-                            <GoogleLogin  id = "googleBtn" disabled style={{opacity:'1.0 !important'}}/> 
-                            <p style={{fontSize:'90%'}}>Dont worry we never post without your permission</p>   
-                        </div>    
-                        <div>
-                            <p style={{marginLeft:"21%", color:'grey'}}><b>-----------------------Or-----------------------</b></p>
-                        </div>
                     </div>
                         <div className="signUpForm">
                             {/* <Form onFinish={this.handleSubmit}> */}
@@ -217,39 +176,7 @@ class SignUp extends Component {
                                 <Row style = {{marginTop:"1%"}}>
                                     <Input.Password id ='password' placeholder= 'Password' style = {{width:"29%"}}></Input.Password>
                                 </Row>
-                                <h4 style = {{marginTop:"1%"}}><b>Birthday</b> Optional</h4>
-                                <Row >
-                                    <Col md = {3}>
-                                        {/* <Form.Item id = 'day'
-                                            style = {{width:"72%"}}
-                                            > */}
-                                                <Select onChange = {this.onDayChange} style = {{width:"72%"}} id ='day' defaultValue = 'Day'>
-                                                    {days}
-                                                </Select>
-                                        {/* </Form.Item> */}
-                                    </Col>
-                                    <Col md = {3}>
-                                        {/* <Form.Item id = 'month'
-                                            style = {{width:"72%", marginLeft:"-20%"}}
-                                            > */}
-                                                <Select onChange = {this.onMonthChange}  id = 'month' style = {{width:"72%", marginLeft:"-20%"}} defaultValue = 'Month'>
-                                                    {months}
-                                                </Select>
-                                        {/* </Form.Item> */}
-                                    </Col>
-                                    <Col md = {3}>
-                                        {/* <Form.Item id = 'year'
-                                            style = {{width:"72%",marginLeft:"-40%"}}
-                                            > */}
-                                                <Select id ='year' onChange = {this.onYearChange}  style = {{width:"72%",marginLeft:"-40%"}} defaultValue = 'Year'>
-                                                    {years}
-                                                </Select>
-                                        {/* </Form.Item> */}
-                                    </Col>
-                                </Row>
-                                <h5 style={{marginTop:"1%"}}>You also understand that Yelp may send marketing</h5>
-                                <h5 style={{marginTop:"-1%"}}>emails about Yelp’s products, services, and local</h5>
-                                <h5 style={{marginTop:"-1%"}}>events. You can unsubscribe at any time.</h5>
+                                <br/>
                                 <Button onClick={this.handleSubmit} size = 'large'><b>Sign Up</b></Button>
                                 <p style={{color:"grey", marginLeft:"11%", marginTop:"1%"}}>Already Member on yelp? <Link to = {{
                                     pathname : '/login'
@@ -257,7 +184,7 @@ class SignUp extends Component {
                             {/* </Form> */}
                         </div>
                         <div>
-                            <img style ={{marginLeft:"55%", marginTop:"-68%"}} src="https://www.pngkey.com/png/full/229-2294529_ai-ml-platform-semiconductor-icon.png" />
+                            <img style ={{marginLeft:"55%", marginTop:"-20%"}} src="https://www.pngkey.com/png/full/229-2294529_ai-ml-platform-semiconductor-icon.png" />
                         </div>
                 </div>
                 

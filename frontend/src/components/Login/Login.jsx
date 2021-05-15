@@ -7,6 +7,7 @@ import { BACKEND } from '../../Config';
 import axios from 'axios';
 import './Login.css'
 import {Redirect} from 'react-router';
+
 class Login extends Component {
     constructor(props){
         super(props);
@@ -14,82 +15,82 @@ class Login extends Component {
             isLoggedIn : false
         }
     }
-componentDidMount = () => {
-   
-}
 
-handleSignIn = () => {
-    var email = document.getElementById("email").value;
-    var password = document.getElementById("password").value
-    const re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-    var isValidEmail =  re.test(String(email).toLowerCase());
-    if(!isValidEmail) 
-    {
-        notification["error"]({
-            message: 'Invalid Email',
-            description:
-              'Please enter a valid email address',
-          });
-    }
-    if(password === "")
-    {
-        notification["error"]({
-            message: 'Empty fields',
-            description:
-              'Please complete all the fields',
-          });
-    }
-    if(isValidEmail && password !== "")
-    {
-        var user = {
-            email : document.getElementById("email").value,
-            password : document.getElementById("password").value
+    handleSignIn = () => {
+        var email = document.getElementById("email").value;
+        var password = document.getElementById("password").value
+        const re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+        var isValidEmail =  re.test(String(email).toLowerCase());
+        if(!isValidEmail) 
+        {
+            notification["error"]({
+                message: 'Invalid Email',
+                description:
+                  'Please enter a valid email address',
+              });
         }
-        // this.props.customerLogin(user);
+        if(password === "")
+        {
+            notification["error"]({
+                message: 'Empty fields',
+                description:
+                  'Please complete all the fields',
+              });
+        }
+        if(isValidEmail && password !== "")
+        {
+            var user = {
+                email : document.getElementById("email").value,
+                password : document.getElementById("password").value
+            }
+            // this.props.customerLogin(user);
+        }
+        axios.post(`${BACKEND}/login`, user).then(response => {
+            console.log(response)
+            if(response.status === 200)
+                {
+                    notification["success"]({
+                        message: 'User SignedIn',
+                        description:
+                          'User successfully signed in',
+                      });
+                      window.sessionStorage.setItem("isLoggedIn", true)
+                      window.sessionStorage.setItem("UserId",response.data.user._id);
+                      window.sessionStorage.setItem("user_name",response.data.user.user_name);
+                      // this.setState({isLoggedIn:true});
+                      // console.log(this.state.isLoggedIn);
+                      window.location.replace('/home');
+                }
+                else if(response.status === 209)
+                {
+                    notification["error"]({
+                        message: 'Invalid credentials',
+                        description:
+                            'Please enter valid Password',
+                            user_id : -1
+                        });
+                    
+                }
+                else if(response.status === 207)
+                {
+                    notification["error"]({
+                        message: 'Invalid credentials',
+                        description:
+                            'User doesnt exist',
+                            user_id : -1
+                        });
+                    
+                }
+                console.log(sessionStorage)
+        })
+      
     }
-    axios.post(`${BACKEND}/login`, user).then(response => {
-        console.log(response)
-        if(response.status === 200)
-            {
-                notification["success"]({
-                    message: 'User SignedIn',
-                    description:
-                      'User successfully signed in',
-                  });
-                  window.sessionStorage.setItem("isLoggedIn", true)
-                  window.sessionStorage.setItem("UserId",response.data.user._id);
-                  window.sessionStorage.setItem("user_name",response.data.user.user_name);
-            }
-            else if(response.status === 209)
-            {
-                notification["error"]({
-                    message: 'Invalid credentials',
-                    description:
-                        'Please enter valid Password',
-                        user_id : -1
-                    });
-                
-            }
-            else if(response.status === 207)
-            {
-                notification["error"]({
-                    message: 'Invalid credentials',
-                    description:
-                        'User doesnt exist',
-                        user_id : -1
-                    });
-                
-            }
-            console.log(sessionStorage)
-    })
-  
-}
     render() {
         
         let redirectVar = null;
-        if(sessionStorage.getItem("isLoggedIn"))
+        if(this.state.isLoggedIn)
         {
-            redirectVar = <Redirect to ='/landingPage'></Redirect>
+            redirectVar = <Redirect to ='/home'></Redirect>
         }
         return (
             <div>
@@ -103,19 +104,6 @@ handleSignIn = () => {
                         <h4 className="signUpH4">New to MLAS? <Link to ={{
                             pathname : "/signUp"
                         }}>Sign Up</Link></h4>
-                        <p style={{marginLeft:"20%"}}>By logging in, you agree to Yelp’s Terms of Service and</p>
-                        <p style={{marginLeft:"29%", marginTop:"-1%"}}>Privacy Policy</p>
-                    </div>
-                    <div className="signInButtons">
-                        <div>
-                            <FacebookLogin size='small' className='facebookbtn'/>
-                        </div>
-                        <div style = {{marginTop:"1%"}}>
-                            <GoogleLogin  id = "googleBtn" disabled style={{opacity:'1.0 !important'}}/> 
-                        </div>
-                    </div>
-                    <div>
-                            <p style={{marginLeft:"21%", marginTop:"1%",color:'grey'}}><b>-----------------------Or-----------------------</b></p>
                     </div>
                     <div>
                         <div className="loginForm">
@@ -127,14 +115,11 @@ handleSignIn = () => {
                         <div className = "btnPosition">
                             <h5 style={{marginTop:"1%", color:"blue", marginLeft:"20%"}}>Forgot Password?</h5>
                             <Button onClick={this.handleSignIn} size = 'large'><b>Sign In</b></Button>
-                            <p style={{color:"grey", marginLeft:"17%", marginTop:"1%"}}>New to yelp? <Link to = {{
-                                    pathname : '/login'
-                                }}>Sign Up</Link></p>
                         </div>
                     </div>
                 </div>
                 <div>
-                    <img style ={{marginLeft:"55%", marginTop:"-53%"}} src="https://www.pngkey.com/png/full/229-2294529_ai-ml-platform-semiconductor-icon.png" />
+                    <img style ={{marginLeft:"55%", marginTop:"-20%"}} src="https://www.pngkey.com/png/full/229-2294529_ai-ml-platform-semiconductor-icon.png" />
                 </div>
             </div>
         )
